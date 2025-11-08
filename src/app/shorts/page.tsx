@@ -6,50 +6,129 @@ import { useEffect, useState } from "react";
 import ShortsSkeleton from '../components/skeletons/shortsSkeleton';
 import { ArrowBigDown, ArrowBigUp } from 'lucide-react';
 
+interface YouTubeVideo {
+  id: {
+    videoId: string;
+  };
+  snippet: {
+    title: string;
+    description: string;
+    channelTitle: string;
+    channelId: string;
+    publishedAt: string;
+    thumbnails: {
+      default: { url: string };
+      medium: { url: string };
+      high: { url: string };
+    };
+  };
+  contentDetails: {
+    duration: string; // ISO 8601 format, e.g. "PT5M30S"
+  };
+  statistics: {
+    viewCount: string;
+    likeCount: string;
+    commentCount: string;
+  };
+}
+
+
+function parseYouTubeDuration(duration: string): number {
+    // returns duration in seconds
+    const match = duration.match(/PT(?:(\d+)M)?(?:(\d+)S)?/);
+    const minutes = parseInt(match?.[1] || "0");
+    const seconds = parseInt(match?.[2] || "0");
+    return minutes * 60 + seconds;
+  }
+
 const page = () => {
-  const videos: unknown[] = [];
   const { theme, setTheme, systemTheme } = useTheme();
   const [isLight, setIsLight] = useState(theme === "light");
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [mounted, setMounted] = useState(false);
+
+  const testVideoId = "2Vv-BfVoq4g"; // Just a regular video or short
+
+  const testVideos = [
+    {
+      id: { videoId: "2Vv-BfVoq4g" },
+      snippet: {
+        title: "Test Video",
+        channelTitle: "Test Channel",
+        thumbnails: {
+          high: { url: "https://i.ytimg.com/vi/2Vv-BfVoq4g/hqdefault.jpg" },
+        },
+      },
+      statistics: { viewCount: "123456" },
+    },
+    
+    {
+      id: { videoId: "2Vv-BfVoq4g" },
+      snippet: {
+        title: "Test Video",
+        channelTitle: "Test Channel",
+        thumbnails: {
+          high: { url: "https://i.ytimg.com/vi/2Vv-BfVoq4g/hqdefault.jpg" },
+        },
+      },
+      statistics: { viewCount: "123456" },
+    },
+  ];
 
   useEffect(() => setMounted(true), []);
 
-  if (!mounted) return null; // avoid mismatches
-
   const currentTheme = theme === "system" ? systemTheme : theme;
+
+  useEffect(() => {
+    const cached = localStorage.getItem("videos");
+    if (cached) {
+      const parsed: YouTubeVideo[] = JSON.parse(cached);
+
+      // Filter videos under 60 seconds → potential Shorts
+      const shorts = parsed.filter((v) => {
+        if (!v.contentDetails?.duration) return false;
+        const duration = parseYouTubeDuration(v.contentDetails.duration);
+        return duration <= 60;
+      });
+
+      // Shuffle so they’re random
+      const shuffled = shorts.sort(() => Math.random() - 0.5);
+
+      setVideos(shuffled);
+    }
+  }, []);
+
+  if (!mounted) return null; // avoid mismatches
 
   return (
     <main className={`relative h-screen w-full flex justify-center overflow-hidden px-4 ${currentTheme === "light" ? "bg-white text-black" : "bg-neutral-900 text-white"}`}>
-      {/* <div className="w-full px-6 py-2 mt-4 flex flex-col place-items-center">
-        <ShortsSkeleton />
-        <ShortsSkeleton />
-        <ShortsSkeleton /> 
-      </div> */}
 
-      <div className="relative w-full flex justify-center">      
+      <div className="relative w-full h-full overflow-hidden">      
         <div
-          className="pt-5 w-full transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateY(-${currentIndex * 100}vh)` }}
+          className="transition-transform duration-500 ease-in-out"
+          style={{
+            transform: `translateY(-${currentIndex * 100}vh)`,
+          }}
         >
-          {/* If no videos yet - show skeletons */}
-          {videos.length === 0 ? (
-            <>
-              <div className="h-screen flex items-center justify-center">
+          {testVideos.length === 0 ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-screen flex items-center justify-center p-15 pt-20">
                 <ShortsSkeleton />
               </div>
-              <div className="h-screen flex items-center justify-center">
-                <ShortsSkeleton />
-              </div>
-              <div className="h-screen flex items-center justify-center">
-                <ShortsSkeleton />
-              </div>
-            </>
+            ))
           ) : (
-            videos.map((video, index) => (
-              <div key={index} className="h-screen flex items-center justify-center">
-                {/* <Short {...video} /> */}
+            testVideos.map((video, index) => (
+              <div key={index} className="h-screen w-full flex items-center justify-center">
+                <ShortsSkeleton
+                  // YouTube embed URL for the short
+                  videoUrl={`https://www.youtube.com/embed/${video.id.videoId}?autoplay=0&controls=0`}
+                  // Fallback thumbnail if needed
+                  thumbnailUrl={video.snippet.thumbnails.high.url}
+                  title={video.snippet.title}
+                  channelName={video.snippet.channelTitle}
+                  views={video.statistics?.viewCount}
+                />
               </div>
             ))
           )}
@@ -66,7 +145,7 @@ const page = () => {
           <button
             onClick={() =>
               setCurrentIndex((prev) =>
-                prev < (videos.length || 3) - 1 ? prev + 1 : prev
+                prev < (videos.length || 4) - 1 ? prev + 1 : prev
               )
             }
             className="bg-gray-600 text-white px-2 py-2 rounded-full hover:cursor-pointer"

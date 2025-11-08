@@ -9,7 +9,7 @@ import { useEffect } from "react";
 
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { theme, setTheme, systemTheme } = useTheme();
   const [isLight, setIsLight] = useState(theme === "light");
 
@@ -28,26 +28,29 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
           defaultTheme="system"
           disableTransitionOnChange
         >
-        <div className={`min-h-screen flex flex-col ${currentTheme === 'light' ? 'bg-white' : 'bg-neutral-900'}`}>
+        <div className={`min-h-screen flex flex-col relative ${currentTheme === 'light' ? 'bg-white' : 'bg-neutral-900'}`}>
         {/* Navbar always on top */}
         <Navbar toggleSidebar={() => setIsSidebarOpen((prev) => !prev)} />
 
-        {/* Sidebar + Main Content */}
-        <div className={`flex min-h-screen`}>
-          {/* Sidebar */}
-          <Sidebar isOpen={isSidebarOpen} />
+        {/* Sidebar as overlay */}
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-          {/* Main Section — shrinks when sidebar is open */}
-          <main
-            className={`flex-1 h-full transition-all duration-300 ${
-              isSidebarOpen ? "ml-[90px] md:ml-[110px]" : "" 
-            } 
-            ${currentTheme === 'light' ? 'bg-white' : 'bg-neutral-900'}
-            flex items-center justify-center`}
-          >
-            {children}
-          </main>
-        </div>
+        {/* Overlay background */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/40 z-102"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        {/* Main content — no margin shifting needed */}
+        <main
+          className={`flex-1 h-full transition-all duration-300 flex items-center justify-center z-10 relative ${
+            currentTheme === "light" ? "bg-white" : "bg-neutral-900"
+          }`}
+        >
+          {children}
+        </main>
       </div>
     </ThemeProvider>
   );

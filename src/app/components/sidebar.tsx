@@ -1,11 +1,12 @@
 "use client";
 
 import React from 'react'
-import { House, Film, CircleUserRound } from 'lucide-react';
+import { House, Film, CircleUserRound, X, Video } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 const tabs = [
   { name: "Home", path: "/" },
@@ -14,7 +15,7 @@ const tabs = [
   { name: "You", path: "/you" },
 ];
 
-const sidebar = ({ isOpen }: {isOpen: boolean}) => {
+const sidebar = ({ isOpen, onClose }: {isOpen: boolean, onClose: () => void;}) => {
     const pathname = usePathname();
     const { theme, setTheme, systemTheme } = useTheme();
     const [isLight, setIsLight] = useState(theme === "light");
@@ -22,57 +23,51 @@ const sidebar = ({ isOpen }: {isOpen: boolean}) => {
     const [mounted, setMounted] = useState(false);
   
     useEffect(() => setMounted(true), []);
-  
-    if (!mounted) return null; // avoid mismatches
-  
-    const currentTheme = theme === "system" ? systemTheme : theme;
+
+    useEffect(() => {
+      if (!mounted) return;
+      const current = theme === "system" ? systemTheme : theme;
+      setIsLight(current === "light");
+    }, [mounted, theme, systemTheme]);
 
   return (
     <aside
-      className={`fixed top-16 left-0 h-[calc(100vh-64px)] overflow-hidden
-        ${isOpen ? "w-[120px] pr-2 md:pr-2" : "w-0"}
-        ${currentTheme === "light" ? "bg-white text-black" : "bg-neutral-900 text-white"}
-      flex justify-center`}
+      className={`fixed top-0 left-0 h-full w-64 z-103 transform transition-transform duration-300 py-2 ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      } ${isLight === true ? 'bg-white text-black' : 'bg-zinc-900 text-white'}`}
     >
-      {/* {isOpen && (
-        <div className={`w-full h-full py-2 pr-2 pl-2 ${isLight === true ? 'bg-white' : 'bg-black'}`}>
-          <ul className="w-full mt-4 space-y-8 items-center z-50 h-full">
-            {tabs.map((tab) => (
-              <li key={tab.name} className={`w-full flex flex-col items-center hover:bg-gray-300 rounded-[8px] transition-all duration-300 px-1 py-2`}>
-                <Link href={tab.path} className={`w-full flex flex-col items-center ${pathname === tab.path ? "text-red-500" : "text-inherit"}`}>
-                  {tab.name === "Home" && <House className='inline mb-1'/>}
-                  {tab.name === "Shorts" && <Film className='inline mb-1'/>}
-                  {tab.name === "Subscriptions" && <Film className='inline mb-1'/>}
-                  {tab.name === "You" && <CircleUserRound className='inline mb-1'/>}
-                  <div className='text-[8px] md:text-[12px]'>{tab.name}</div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )} */}
       <div
         className={`h-full py-2 px-2 transition-opacity duration-200
           ${isOpen ? "opacity-100 delay-100" : "opacity-0 delay-0"}
         `}
       >
+        <div className='w-fit inline-flex items-center justify-center'>
+        <button
+          onClick={onClose}
+          className={`hover:cursor-pointer mx-2 transition-colors duration-300 ease-in-out ${isLight === true ? "text-zinc-900 hover:text-zinc-400" : "text-white hover:text-zinc-400"}`}
+        >
+          <X size={25} />
+        </button>
+        <Image src={"/youtube_logo.png"} alt="Image Logo" width={50} height={20} />
+        <h1 className="text-lg font-bold">YouTube Clone</h1>
+      </div>
         <ul className="mt-4 space-y-8 items-center h-full">
           {tabs.map((tab) => (
             <li
               key={tab.name}
-              className="w-full flex flex-col items-center hover:bg-gray-300 rounded-[8px] transition-all duration-300 px-1 py-2"
+              className="w-full flex flex-col items-center hover:bg-gray-300 rounded-[8px] transition-all duration-300 px-2 py-2"
             >
               <Link
                 href={tab.path}
-                className={`w-full flex flex-col items-center ${
+                className={`w-full flex flex-row gap-2 items-center justify-start ${
                   pathname === tab.path ? "text-red-500" : "text-inherit"
                 }`}
               >
                 {tab.name === "Home" && <House className="inline mb-1" />}
-                {tab.name === "Shorts" && <Film className="inline mb-1" />}
+                {tab.name === "Shorts" && <Video className="inline mb-1" />}
                 {tab.name === "Subscriptions" && <Film className="inline mb-1" />}
                 {tab.name === "You" && <CircleUserRound className="inline mb-1" />}
-                <div className="text-[8px] md:text-[12px]">{tab.name}</div>
+                <div className="text-[12px] md:text-[16px] mb-[1px]">{tab.name}</div>
               </Link>
             </li>
           ))}
