@@ -50,11 +50,13 @@ export default function WatchPage() {
           const items = parsed.items || []; // Extract the actual array
 
           const current = items.find(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (v: any) => v.id === id || v.id?.videoId === id
           );
           setVideo(current || null);
 
           setRelated(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             items.filter((v: any) => v.id !== id && v.id?.videoId !== id).slice(0, 10)
           );
         }
