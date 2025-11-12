@@ -163,7 +163,7 @@ export default function Home() {
           videos.slice(0, 6).map((video, index) => (
           <ThumbnailSkeleton
             key={index}
-            id={video.id}
+            id={typeof video.id === "string" ? video.id : video.id.videoId}
             title={video.snippet.title}
             channel={video.snippet.channelTitle}
             thumbnailUrl={video.snippet.thumbnails.high.url}
@@ -202,7 +202,7 @@ export default function Home() {
           videos.slice(6, 12).map((video, index) => (
           <ThumbnailSkeleton
             key={index}
-            id={video.id}
+            id={typeof video.id === "string" ? video.id : video.id.videoId}
             title={video.snippet.title}
             channel={video.snippet.channelTitle}
             thumbnailUrl={video.snippet.thumbnails.high.url}
