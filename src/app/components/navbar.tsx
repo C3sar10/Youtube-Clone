@@ -8,7 +8,7 @@ import ThemeToggle from './themeToggle';
 import SearchBar from './searchBar';
 import Link from 'next/link';
 
-const navbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
+const Navbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   const { theme, setTheme, systemTheme } = useTheme();
   const [isLight, setIsLight] = useState(theme === "light");
 
@@ -46,4 +46,4 @@ const navbar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   );
 }
 
-export default navbar
+export default Navbar

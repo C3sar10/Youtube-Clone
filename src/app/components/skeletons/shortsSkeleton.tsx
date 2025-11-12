@@ -24,7 +24,7 @@ const ShortsSkeleton = ({ thumbnailUrl, title, channelName, views, videoUrl }: S
     }
 
   return (
-    <div className="w-full h-full flex flex-col gap-2 items-center justify-center">
+    <div className="w-full h-full flex flex-col gap-2 items-center justify-center pt-20">
       {videoUrl ? (
         <div className="w-full max-w-md flex-1 overflow-hidden">
           <iframe

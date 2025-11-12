@@ -41,7 +41,7 @@ function parseYouTubeDuration(duration: string): number {
     return minutes * 60 + seconds;
   }
 
-const page = () => {
+const Page = () => {
   const { theme, setTheme, systemTheme } = useTheme();
   const [isLight, setIsLight] = useState(theme === "light");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -158,4 +158,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

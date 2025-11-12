@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { EllipsisVertical, Dot } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
 
 interface ThumbnailProps {
   id?: string;
@@ -15,12 +16,18 @@ interface ThumbnailProps {
 
 
 const ThumbnailSkeleton = ({ id, title, channel, thumbnailUrl, duration, views, published }: ThumbnailProps) => {
+  const { theme, setTheme } = useTheme();
+  const [isLight, setIsLight] = useState(theme === "light");
   const isSkeleton = !id || !title || !channel || !thumbnailUrl;
+
+  useEffect(() => {
+    setIsLight(theme === "light");
+  }, [theme]);
 
   if(isSkeleton){
     return(
       <div
-      className={`w-full max-w-[550px] flex flex-col hover:cursor-pointer hover:bg-gray-600/40 transition-all ease-in-out duration-500 p-4 rounded-[12px] animate-pulse`}>
+      className={`w-full max-w-[550px] flex flex-col hover:cursor-pointer transition-all ease-in-out duration-500 p-4 rounded-[12px] animate-pulse ${isLight === true ? 'hover:bg-gray-200' : 'hover:bg-gray-600/40'}`}>
       {/* Thumbnail */}
       <div className="w-full h-[225px] bg-gray-300 dark:bg-gray-700 rounded-[12px]"></div>
 
@@ -40,7 +47,7 @@ const ThumbnailSkeleton = ({ id, title, channel, thumbnailUrl, duration, views, 
 
   return (
     <Link href={`/watch/${id}`}
-      className={`w-full max-w-[550px] flex flex-col hover:cursor-pointer hover:bg-gray-600/40 transition-all ease-in-out duration-500 p-4 rounded-[12px]`}
+      className={`w-full max-w-[550px] flex flex-col hover:cursor-pointer transition-all ease-in-out duration-500 p-4 rounded-[12px] ${isLight === true ? 'hover:bg-gray-200' : 'hover:bg-gray-600/40'}`}
     >
       {/* Thumbnail */}
       <div className="relative w-full h-[225px] rounded-[12px] overflow-hidden hover:scale-102 transition-all duration-500 ease-in-out">

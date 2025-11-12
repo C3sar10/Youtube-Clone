@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { ChevronDown } from 'lucide-react';
 import SubscriptionSkeleton from '../components/skeletons/subscriptionSkeleton';
 
-const page = () => {
+const Page = () => {
   const { theme, setTheme } = useTheme();
   const [isLight, setIsLight] = useState(theme === "light");
   const [isOpen, setIsOpen] = useState(false);
@@ -60,4 +60,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 
 interface YouTubeVideo {
   id: {
@@ -35,7 +36,13 @@ export default function WatchPage() {
     const { id } = useParams();
     const [video, setVideo] = useState<YouTubeVideo | null>(null);
     const [related, setRelated] = useState<YouTubeVideo[]>([]);
+    const { theme, setTheme } = useTheme();
+    const [isLight, setIsLight] = useState(theme === "light");
 
+    useEffect(() => {
+      setIsLight(theme === "light");
+    }, [theme]);
+    
     useEffect(() => {
         const cached = localStorage.getItem('cachedVideos');
         if (cached) {
@@ -62,7 +69,7 @@ export default function WatchPage() {
     }
 
     return( 
-      <main className="flex flex-col lg:flex-row w-full min-h-screen bg-neutral-900 text-white mt-15">
+      <main className={`flex flex-col lg:flex-row w-full min-h-screen ${isLight === true ? 'bg-white' : 'bg-neutral-900'} pt-15`}>
       {/* Main Video Section */}
       <section className="flex-1 p-4 lg:p-6">
         <div className="aspect-video w-full bg-black rounded-xl overflow-hidden">
@@ -75,9 +82,9 @@ export default function WatchPage() {
         </div>
 
         <h1 className="text-xl font-semibold mt-4">{video.snippet.title}</h1>
-        <p className="text-sm text-gray-400">{video.snippet.channelTitle}</p>
+        <p className="text-sm text-gray-300">{video.snippet.channelTitle}</p>
         {video.statistics?.viewCount && (
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-300 mt-1">
             {parseInt(video.statistics.viewCount).toLocaleString()} views
           </p>
         )}
@@ -88,7 +95,7 @@ export default function WatchPage() {
       </section>
 
       {/* Sidebar with related videos */}
-      <aside className="w-full lg:w-[400px] p-4 lg:p-6 border-t lg:border-t-0 lg:border-l border-gray-700">
+      <aside className={`w-full lg:w-[400px] p-4 lg:p-6 border-t lg:border-t-0 lg:border-l ${isLight === true ? 'border-gray-300' : 'border-gray-700'}`}>
         <h2 className="font-semibold mb-3 text-lg">Related Videos</h2>
         <div className="flex flex-col gap-4">
           {related.map((vid, index) => (

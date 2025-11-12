@@ -176,7 +176,7 @@ export default function Home() {
           Array.from({ length: 6 }).map((_, i) => <ThumbnailSkeleton key={i} />)
         )}
       </div>
-      <div className="relative w-full flex flex-col justify-center px-4 py-12 gap-4 border-b">
+      <div className={`relative w-full flex flex-col justify-center px-4 py-12 gap-4 border-b ${isLight === true ? 'border-gray-300' : 'border-gray-700'}`}>
         <div className="w-full flex justify-between">
           <span className="flex gap-2 items-center">
             <Image src={"/Youtube_Shorts.png"} alt="Youtube Shorts Logo" width={20} height={20}/>
@@ -192,7 +192,7 @@ export default function Home() {
             <ShortsSkeleton key={i}/>
           ))}
         </div>
-        <Link href={"/shorts"} className={`absolute left-1/2 -translate-x-1/2 -bottom-4 z-10 border rounded-full px-4 py-1 shadow-sm cursor-pointer w-1/3 transition-all duration-500 ${isLight === true ? "bg-white hover:bg-neutral-100" : "bg-neutral-900 hover:bg-neutral-800"} flex items-center justify-center gap-2`}>
+        <Link href={"/shorts"} className={`absolute left-1/2 -translate-x-1/2 -bottom-4 z-10 border rounded-full px-4 py-1 shadow-sm cursor-pointer w-1/3 transition-all duration-500 ${isLight === true ? "bg-white hover:bg-neutral-100 border-gray-300" : "bg-neutral-900 hover:bg-neutral-800 border-gray-700"} flex items-center justify-center gap-2`}>
           <span>More shorts</span>
           <ArrowRight size={20}/>
         </Link>

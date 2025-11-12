@@ -15,7 +15,7 @@ const tabs = [
   { name: "You", path: "/you" },
 ];
 
-const sidebar = ({ isOpen, onClose }: {isOpen: boolean, onClose: () => void;}) => {
+const Sidebar = ({ isOpen, onClose }: {isOpen: boolean, onClose: () => void;}) => {
     const pathname = usePathname();
     const { theme, setTheme, systemTheme } = useTheme();
     const [isLight, setIsLight] = useState(theme === "light");
@@ -77,4 +77,4 @@ const sidebar = ({ isOpen, onClose }: {isOpen: boolean, onClose: () => void;}) =
   )
 }
 
-export default sidebar
+export default Sidebar

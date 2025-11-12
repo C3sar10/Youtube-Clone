@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ThumbnailSkeleton from '../components/skeletons/thumbnailSkeleton';
 import useEmblaCarousel from 'embla-carousel-react';
 
-const page = () => {
+const Page = () => {
   const { theme, setTheme } = useTheme();
   const [isLight, setIsLight] = useState(theme === "light");
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
@@ -202,4 +202,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
